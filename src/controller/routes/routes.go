@@ -1,15 +1,18 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/GiovannaK/go-api/src/controller"
+	"github.com/gin-gonic/gin"
+)
 
 func InitRoutes(r *gin.RouterGroup) {
-	r.GET("/getUserById/:userId")
+	r.GET("/getUserById/:userId", controller.FindUserById)
 
-	r.GET("/getUserByEmail/:userEmail")
+	r.GET("/getUserByEmail/:userEmail", controller.FindUserByEmail)
 
-	r.POST("/createUser")
+	r.POST("/createUser", controller.CreateUser)
 
-	r.PUT("/updateUser/:userId")
+	r.PUT("/updateUser/:userId", controller.UpdateUser)
 
-	r.DELETE("/deleteUser/:userId")
+	r.DELETE("/deleteUser/:userId", controller.DeleteUser)
 }
