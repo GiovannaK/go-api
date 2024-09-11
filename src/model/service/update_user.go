@@ -1,17 +1,14 @@
-package model
+package service
 
 import (
-	"fmt"
-
 	"github.com/GiovannaK/go-api/src/configuration/logger"
 	"github.com/GiovannaK/go-api/src/configuration/rest_err"
+	"github.com/GiovannaK/go-api/src/model"
 	"go.uber.org/zap"
 )
 
-func (ud *userDomain) UpdateUser(userId string) *rest_err.RestErr {
+func (*userDomainInterface) UpdateUser(userId string, userDomain model.UserDomainInterface) *rest_err.RestErr {
 	logger.Info("UpdateUser function called", zap.String("journey", "UpdateUser"))
-
-	fmt.Println("User updated successfully", ud)
 
 	return nil
 }

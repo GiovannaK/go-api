@@ -8,6 +8,7 @@ import (
 	"github.com/GiovannaK/go-api/src/configuration/rest_err"
 	"github.com/GiovannaK/go-api/src/controller/model/request"
 	"github.com/GiovannaK/go-api/src/model"
+	"github.com/GiovannaK/go-api/src/model/service"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -30,8 +31,8 @@ func CreateUser(c *gin.Context) {
 	}
 
 	domain := model.NewUserDomain(userRequest.Name, userRequest.Email, userRequest.Password, userRequest.Age)
-
-	if err := domain.CreateUser(); err != nil {
+	service := service.NewUserDomainService()
+	if err := service.CreateUser(domain); err != nil {
 		c.JSON(err.Code, err)
 		return
 	}

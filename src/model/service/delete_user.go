@@ -1,4 +1,4 @@
-package model
+package service
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (ud *userDomain) DeleteUser(userId string) *rest_err.RestErr {
+func (ud *userDomainInterface) DeleteUser(userId string) *rest_err.RestErr {
 	logger.Info("DeleteUser function called", zap.String("journey", "DeleteUser"))
 
 	fmt.Println("User deleted successfully", userId)
