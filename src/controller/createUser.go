@@ -8,7 +8,7 @@ import (
 	"github.com/GiovannaK/go-api/src/configuration/rest_err"
 	"github.com/GiovannaK/go-api/src/controller/model/request"
 	"github.com/GiovannaK/go-api/src/model"
-	"github.com/GiovannaK/go-api/src/model/service"
+	"github.com/GiovannaK/go-api/src/view"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -18,7 +18,7 @@ var (
 	UserDomainInterface model.UserDomainInterface
 )
 
-func CreateUser(c *gin.Context) {
+func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 	logger.Info("CreateUser function called", zap.String("journey", "CreateUser"))
 	var userRequest request.UserRequest
 
@@ -31,12 +31,11 @@ func CreateUser(c *gin.Context) {
 	}
 
 	domain := model.NewUserDomain(userRequest.Name, userRequest.Email, userRequest.Password, userRequest.Age)
-	service := service.NewUserDomainService()
-	if err := service.CreateUser(domain); err != nil {
+	if err := uc.service.CreateUser(domain); err != nil {
 		c.JSON(err.Code, err)
 		return
 	}
 
-	c.String(http.StatusOK, "")
+	c.JSON(http.StatusOK, view.ConvertDomainToResponse(domain))
 
 }
