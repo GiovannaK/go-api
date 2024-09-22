@@ -7,6 +7,8 @@ import (
 	"github.com/GiovannaK/go-api/src/configuration/logger"
 	"github.com/GiovannaK/go-api/src/configuration/rest_err"
 	"github.com/GiovannaK/go-api/src/model"
+	"github.com/GiovannaK/go-api/src/model/repository/entity/converter"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/zap"
 )
 
@@ -21,18 +23,15 @@ func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (mode
 
 	collection := ur.databaseConnection.Collection(collection_name)
 
-	value, err := userDomain.GetJSONValue()
-	if err != nil {
-		return nil, rest_err.NewInternalServerError(err.Error())
-	}
-	
+	value := converter.ConvertDomainToEntity(userDomain)
+
 	result, err := collection.InsertOne(context.Background(), value)
 
 	if err != nil {
 		return nil, rest_err.NewInternalServerError(err.Error())
 	}
 
-	userDomain.SetId(result.InsertedID.(string))
+	value.ID = result.InsertedID.(primitive.ObjectID)
 
-	return userDomain, nil
+	return converter.ConvertEntityToDomain(*value), nil
 }

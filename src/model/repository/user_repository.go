@@ -6,7 +6,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func NewUserRepository(database *mongo.Database) UserRepository {
+func NewUserRepository(
+	database *mongo.Database,
+) UserRepository {
 	return &userRepository{
 		database,
 	}

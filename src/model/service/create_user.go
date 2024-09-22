@@ -11,12 +11,18 @@ import (
 
 func (ud *userDomainInterface) CreateUser(
 	userDomain model.UserDomainInterface,
-) *rest_err.RestErr {
+) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("CreateUser function called", zap.String("journey", "CreateUser"))
 
 	userDomain.EncryptPassword()
 
-	fmt.Println("User created successfully", userDomain.GetPassword())
+	userDomainRepository, err := ud.userRepository.CreateUser(userDomain)
 
-	return nil
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("User created successfully", userDomain.GetName())
+
+	return userDomainRepository, nil
 }
