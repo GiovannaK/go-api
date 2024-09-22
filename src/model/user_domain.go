@@ -12,6 +12,10 @@ func (ud *userDomain) SetId(id string) {
 	ud.ID = id
 }
 
+func (ud *userDomain) GetID() string {
+	return ud.ID
+}
+
 func (ud *userDomain) GetEmail() string {
 	return ud.email
 }

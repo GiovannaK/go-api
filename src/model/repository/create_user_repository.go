@@ -12,9 +12,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	MONGO_USER_COLLECTION = "MONGO_USER_COLLECTION"
-)
 
 func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr) {
 	logger.Info("CreateUser function called", zap.String("journey", "CreateUser"))

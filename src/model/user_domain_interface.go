@@ -14,10 +14,6 @@ func NewUserDomain(
 	}
 }
 
-func (ud *userDomain) GetID() string {
-	return ud.ID
-}
-
 type UserDomainInterface interface {
 	GetEmail() string
 	GetID() string
