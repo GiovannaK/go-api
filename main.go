@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-
 	"github.com/GiovannaK/go-api/src/configuration/database/mongodb"
 	"github.com/GiovannaK/go-api/src/configuration/logger"
 	"github.com/GiovannaK/go-api/src/controller/routes"
@@ -19,13 +18,14 @@ func main() {
 	}
 
 	database, err := mongodb.NewMongoDBConnection(context.Background())
-
-	userController := initDependencies(database)
-
+	
 	if err != nil {
 		log.Fatalf("Error connecting to MongoDB, error=%s \n", err.Error())
 		return
 	}
+
+	userController := initDependencies(database)
+
 
 	router := gin.Default()
 
