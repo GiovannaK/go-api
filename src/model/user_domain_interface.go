@@ -1,5 +1,7 @@
 package model
 
+import "github.com/GiovannaK/go-api/src/configuration/rest_err"
+
 func NewUserDomain(
 	email string,
 	name string,
@@ -42,4 +44,5 @@ type UserDomainInterface interface {
 	GetAge() int8
 	SetId(string)
 	EncryptPassword()
+	GenerateToken() (string, *rest_err.RestErr)
 }
