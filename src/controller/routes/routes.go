@@ -2,14 +2,15 @@ package routes
 
 import (
 	"github.com/GiovannaK/go-api/src/controller"
+	"github.com/GiovannaK/go-api/src/model"
 	"github.com/gin-gonic/gin"
 )
 
 func InitRoutes(r *gin.RouterGroup, userController controller.UserControllerInterface) {
 
-	r.GET("/getUserById/:userId", userController.FindUserById)
+	r.GET("/getUserById/:userId", model.VerifyTokenMiddleware, userController.FindUserById)
 
-	r.GET("/getUserByEmail/:userEmail", userController.FindUserByEmail)
+	r.GET("/getUserByEmail/:userEmail", model.VerifyTokenMiddleware, userController.FindUserByEmail)
 
 	r.POST("/createUser", userController.CreateUser)
 
