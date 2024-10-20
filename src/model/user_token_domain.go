@@ -2,6 +2,7 @@ package model
 
 import (
 	"os"
+	"strings"
 	"time"
 
 	"github.com/GiovannaK/go-api/src/configuration/rest_err"
@@ -22,7 +23,7 @@ func (ud *userDomain) GenerateToken() (string, *rest_err.RestErr) {
 		"exp":   time.Now().Add(time.Hour * 24).Unix(),
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(secret))
 
 	if err != nil {
@@ -30,4 +31,38 @@ func (ud *userDomain) GenerateToken() (string, *rest_err.RestErr) {
 	}
 
 	return tokenString, nil
+}
+
+func VerifyToken(tokenValue string) (UserDomainInterface, *rest_err.RestErr) {
+	secret := os.Getenv(JWT_SECRET_KEY)
+
+	token, err := jwt.Parse(RemoveBearerPrefix(tokenValue), func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); ok {
+			return []byte(secret), nil
+		}
+
+		return nil, rest_err.NewBadRequestError("invalid token")
+	})
+	if err != nil {
+		return nil, rest_err.NewUnauthorizedError("invalid token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return nil, rest_err.NewUnauthorizedError("invalid token")
+	}
+
+	return &userDomain{
+		ID:    claims["id"].(string),
+		email: claims["email"].(string),
+		name:  claims["name"].(string),
+		age:   int8(claims["age"].(float64)),
+	}, nil
+}
+
+func RemoveBearerPrefix(token string) string {
+	if strings.HasPrefix(token, "Bearer ") {
+		token = strings.TrimPrefix(token, "Bearer ")
+	}
+	return token
 }

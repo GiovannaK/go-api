@@ -1,11 +1,13 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"net/mail"
 
 	"github.com/GiovannaK/go-api/src/configuration/logger"
 	"github.com/GiovannaK/go-api/src/configuration/rest_err"
+	"github.com/GiovannaK/go-api/src/model"
 	"github.com/GiovannaK/go-api/src/view"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,6 +16,19 @@ import (
 
 func (uc *userControllerInterface) FindUserById(c *gin.Context) {
 	logger.Info("FindUserByID function called", zap.String("journey", "FindUserByID"))
+
+	user, err := model.VerifyToken(c.Request.Header.Get("Authorization"))
+
+	if err != nil {
+		logger.Error("Error while verifying token", err)
+		restErr := rest_err.NewUnauthorizedError("Invalid token")
+
+		c.JSON(restErr.Code, restErr)
+		return
+	}
+
+	logger.Info(fmt.Sprintf("User verified %#v", user))
+
 	userId := c.Param("userId")
 	if _, err := primitive.ObjectIDFromHex(userId); err != nil {
 		logger.Error("Error parsing UUID", err, zap.String("journey", "FindUserByID"))
@@ -21,7 +36,9 @@ func (uc *userControllerInterface) FindUserById(c *gin.Context) {
 		c.JSON(errorMessage.Code, errorMessage)
 		return
 	}
-	user, err := uc.service.FindUserByIDServices(userId)
+
+	user, err = uc.service.FindUserByIDServices(userId)
+
 	if err != nil {
 		logger.Error("Error finding user by ID", err, zap.String("journey", "FindUserByID"))
 		c.JSON(err.Code, err)
